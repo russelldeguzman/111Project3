@@ -11,12 +11,12 @@
 # information you'd like us to know, please add it at the end of the file.
 
 # Partner 1
-Name: 
-Student ID: 
-Email: 
+Name: David Yang
+Student ID: 404330995
+Email: dayy@linux.ucla.edu
 
 # Partner 2 (if you're working in a team)
-Name: 
+Name: Russell Deguzman
 Student ID: 
 Email: 
 
