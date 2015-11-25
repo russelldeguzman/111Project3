@@ -885,21 +885,19 @@ change_size(ospfs_inode_t *oi, uint32_t new_size)
 	while (ospfs_size2nblocks(oi->oi_size) < ospfs_size2nblocks(new_size)) {
 	        /* EXERCISE: Your code here */
 		r = add_block(oi);
-		if(r == -EIO) return -EIO;
-		else if(r == -ENOSPC){
-			while(ospfs_size2nblocks(oi->oi_size)){
-				r = remove_block(oi);
-			}
-			oi->oi_size = old_size; 
-			return -ENOSPC;
+		if(r < 0){
+			oi->oi_size = old_size;
+			return r;
 		}
-		if(r < 0) break;
 	}
 
 	while (ospfs_size2nblocks(oi->oi_size) > ospfs_size2nblocks(new_size)) {
 	        /* EXERCISE: Your code here */
 		r = remove_block(oi);
-		if (r < 0) return r;
+		if (r < 0){
+			oi->oi_size = old_size;
+			return r;
+		}
 	}
 
 	/* EXERCISE: Make sure you update necessary file meta data
@@ -1035,7 +1033,8 @@ ospfs_write(struct file *filp, const char __user *buffer, size_t count, loff_t *
 	// Support files opened with the O_APPEND flag.  To detect O_APPEND,
 	// use struct file's f_flags field and the O_APPEND bit.
 	/* EXERCISE: Your code here */
-
+	if(filp->f_flags & O_APPEND) *f_pos = oi->oi_size;
+	
 	// If the user is writing past the end of the file, change the file's
 	// size to accomodate the request.  (Use change_size().)
 	/* EXERCISE: Your code here */
